@@ -6,4 +6,4 @@ joblib
 nltk
 pandas
 openpyxl
-calamancy @ git+https://github.com/roedoejet/calamancy
+calamancy
