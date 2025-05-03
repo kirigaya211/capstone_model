@@ -1,7 +1,7 @@
-fastapi==0.110.0
-uvicorn[standard]==0.29.0
-transformers==4.39.3
-torch==2.2.2
-joblib==1.4.0
-spacy==3.8.5
-tl-calamancy-md @ https://github.com/ljvmiranda921/calamanCy/releases/download/v0.1.0/tl_calamancy_md-0.1.0.tar.gz
+fastapi
+uvicorn[standard]
+scikit-learn>=1.0.2
+calamanCy==0.2.2
+torch>=1.12.1
+transformers==4.40.0
+nltk
