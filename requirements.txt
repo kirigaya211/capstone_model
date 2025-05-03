@@ -1,8 +1,11 @@
 fastapi
 uvicorn[standard]
 scikit-learn>=1.0.2
-calamancy==0.2.2
+# calamancy==0.2.2
 torch>=1.12.1
 transformers==4.36.0
 nltk
 spacy
+# requirements.txt
+calamancy @ git+https://github.com/jcblaise/calamancy.git
+https://github.com/jcblaise/calamancy/releases/download/v0.2.0/tl_calamancy_md-0.2.0-py3-none-any.whl
