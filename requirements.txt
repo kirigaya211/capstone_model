@@ -1,9 +1,23 @@
+# Web framework
 fastapi
 uvicorn
-torch
-transformers
+
+# Machine learning
+scikit-learn
 joblib
+
+# NLP models and tokenization
+transformers
+torch
+
+# SpaCy for calamanCy pipeline
+spacy>=3.5.0,<3.9.0
+
+# Filipino NLP pipeline (calamanCy)
+tl_calamancy_md @ https://huggingface.co/ljvmiranda921/tl_calamancy_md-0.1.0/resolve/main/tl_calamancy_md-0.1.0-py3-none-any.whl
+
+# Performance improvement (optional but recommended)
+huggingface_hub[hf_xet]
+
+# Text preprocessing
 nltk
-pandas
-openpyxl
-calamancy
