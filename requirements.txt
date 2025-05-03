@@ -3,5 +3,5 @@ uvicorn[standard]
 scikit-learn>=1.0.2
 calamanCy==0.2.2
 torch>=1.12.1
-transformers==4.40.0
+transformers==4.36.0
 nltk
