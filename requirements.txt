@@ -7,5 +7,4 @@ transformers==4.36.0
 nltk
 spacy
 # requirements.txt
-calamancy @ git+https://github.com/jcblaise/calamancy.git
-https://github.com/jcblaise/calamancy/releases/download/v0.2.0/tl_calamancy_md-0.2.0-py3-none-any.whl
+calamancy @ https://github.com/ljvmiranda921/calamanCy.git

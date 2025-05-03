@@ -13,9 +13,8 @@ app = FastAPI()
 
 # Load NLP tools
 
+nlp = spacy.load("tl_calamancy_md")
 
-
-nlp = spacy.load("tl_calamancy_md-0.2.0")
 
 
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
