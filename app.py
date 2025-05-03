@@ -2,17 +2,21 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import torch
-import calamancy
+
 from transformers import AutoTokenizer, AutoModel
 import nltk
 nltk.download('stopwords')
 from nltk.corpus import stopwords
+import spacy
 
 app = FastAPI()
 
 # Load NLP tools
 
-nlp = calamancy.load_model("tl_calamancy_md-0.2.0")
+
+
+nlp = spacy.load("tl_calamancy_md-0.2.0")
+
 
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 transformer_model = AutoModel.from_pretrained("xlm-roberta-base")
