@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import torch
-import calamancy
+import calamanCy
 from transformers import AutoTokenizer, AutoModel
 import nltk
 nltk.download('stopwords')
@@ -11,7 +11,9 @@ from nltk.corpus import stopwords
 app = FastAPI()
 
 # Load NLP tools
-nlp = calamancy.load("tl_calamancy_md")
+
+nlp = calamanCy.load_model("tl_calamancy_md-0.2.0")
+
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 transformer_model = AutoModel.from_pretrained("xlm-roberta-base")
 svm_model = joblib.load("svm_model.pkl")
