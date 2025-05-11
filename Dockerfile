@@ -12,7 +12,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Download spaCy model and calamancy model
-RUN python -m spacy download tl_core_news_md
+RUN python -m spacy download tl_core_news_lg
 RUN python -m calamancy download tl_calamancy_md-0.1.0
 
 # Copy model files
