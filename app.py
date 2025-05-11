@@ -1,15 +1,23 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import joblib
 import torch
 import calamancy
 from transformers import AutoTokenizer, AutoModel
 import numpy as np
+import os
 
 app = FastAPI()
 
 # --- Load NLP tools and model ---
-nlp = calamancy.load("tl_calamancy_md-0.1.0")
+try:
+    nlp = calamancy.load("tl_calamancy_md-0.1.0")
+except Exception as e:
+    print(f"Error loading calamancy model: {e}")
+    print("Attempting to download model...")
+    os.system("pip install calamancy")
+    nlp = calamancy.load("tl_calamancy_md-0.1.0")
+
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 transformer_model = AutoModel.from_pretrained("xlm-roberta-base")
 svm_model = joblib.load("svm_model.pkl")

@@ -11,9 +11,6 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download calamancy model
-RUN python -m calamancy download tl_calamancy_md-0.1.0
-
 # Copy model files
 COPY svm_model.pkl .
 # COPY svm_feature_means.npy .  # Uncomment if you're using feature means
