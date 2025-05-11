@@ -11,8 +11,13 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download spaCy model
+# Download spaCy model and calamancy model
 RUN python -m spacy download tl_core_news_md
+RUN python -m calamancy download tl_calamancy_md-0.1.0
+
+# Copy model files
+COPY svm_model.pkl .
+# COPY svm_feature_means.npy .  # Uncomment if you're using feature means
 
 # Copy the rest of the application
 COPY . .
@@ -21,4 +26,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] 
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"] 

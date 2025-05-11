@@ -7,4 +7,8 @@ services:
     healthCheckPath: /docs
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9.0 
+        value: 3.9.0
+      - key: TRANSFORMERS_CACHE
+        value: /app/cache
+      - key: TORCH_HOME
+        value: /app/cache 
