@@ -6,6 +6,11 @@ import calamancy
 from transformers import AutoTokenizer, AutoModel
 import numpy as np
 import os
+import shap
+import matplotlib.pyplot as plt
+import io
+import base64
+from typing import Dict, Any
 
 app = FastAPI()
 
@@ -22,8 +27,6 @@ tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 transformer_model = AutoModel.from_pretrained("xlm-roberta-base")
 svm_model = joblib.load("svm_model.pkl")
 # feature_means = np.load("svm_feature_means.npy")  # Optional: for scaling
-
-blacklist = set(['8888', '2929', 'SPAMCODE'])  # Use the same as in training
 
 def preprocess_text(text):
     text = str(text)
@@ -45,25 +48,60 @@ def get_embeddings(text_list):
 def get_sender_features(sender):
     is_numeric = int(str(sender).isdigit())
     is_short = int(len(str(sender)) < 6)
-    is_blacklisted = int(str(sender) in blacklist)
-    return np.array([is_numeric, is_short, is_blacklisted])
+    return np.array([is_numeric, is_short])
+
+def generate_explanation_plot(features, prediction):
+    # Create a SHAP explainer
+    explainer = shap.KernelExplainer(svm_model.predict_proba, np.zeros((1, features.shape[0])))
+    
+    # Calculate SHAP values
+    shap_values = explainer.shap_values(features.reshape(1, -1))
+    
+    # Create the plot
+    plt.figure(figsize=(10, 6))
+    shap.summary_plot(shap_values[1], features.reshape(1, -1), plot_type="bar", show=False)
+    
+    # Convert plot to base64 string
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    buf.seek(0)
+    img_str = base64.b64encode(buf.read()).decode()
+    plt.close()
+    
+    return img_str
 
 class SMSRequest(BaseModel):
     sender: str
     message: str
 
-@app.post("/predict")
+class PredictionResponse(BaseModel):
+    sender: str
+    message: str
+    processed: str
+    prediction: str
+    explanation_plot: str
+    confidence: float
+
+@app.post("/predict", response_model=PredictionResponse)
 def predict(data: SMSRequest):
     processed = preprocess_text(data.message)
     embedding = get_embeddings([processed])[0]
     sender_features = get_sender_features(data.sender)
     features = np.concatenate([embedding, sender_features])
-    # Optionally: features = (features - feature_means)  # If you want to mean-center
+    
+    # Get prediction and probability
     prediction = svm_model.predict([features])[0]
-    label = "SPAM" if prediction == 1 else "HAM"
+    probabilities = svm_model.predict_proba([features])[0]
+    confidence = float(probabilities[1] if prediction == 1 else probabilities[0])
+    
+    # Generate explanation plot
+    explanation_plot = generate_explanation_plot(features, prediction)
+    
     return {
         "sender": data.sender,
         "message": data.message,
         "processed": processed,
-        "prediction": label
+        "prediction": "SPAM" if prediction == 1 else "HAM",
+        "explanation_plot": explanation_plot,
+        "confidence": confidence
     }
