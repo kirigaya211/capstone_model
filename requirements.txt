@@ -12,5 +12,3 @@ uvicorn[standard]==0.24.0
 torchvision==0.16.0
 python-multipart==0.0.6
 pydantic>=1.7.4,<1.11.0
-shap==0.44.0
-matplotlib==3.8.2
