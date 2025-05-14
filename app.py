@@ -56,6 +56,6 @@ def predict(data: SMSRequest):
     return {
         "sender": data.sender,
         "message": data.message,
-        "processed": embedding,
+        "processed": processed,
         "prediction": label
     }
