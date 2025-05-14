@@ -8,11 +8,14 @@ import numpy as np
 
 app = FastAPI()
 
+# --- Load NLP tools and model ---
 nlp = calamancy.load("tl_calamancy_md-0.1.0")
 tokenizer = AutoTokenizer.from_pretrained("xlm-roberta-base")
 transformer_model = AutoModel.from_pretrained("xlm-roberta-base")
 svm_model = joblib.load("svm_model.pkl")
 # feature_means = np.load("svm_feature_means.npy")  # Optional: for scaling
+
+blacklist = set(['8888', '2929', 'SPAMCODE'])  # Use the same as in training
 
 def preprocess_text(text):
     text = str(text)
@@ -34,7 +37,8 @@ def get_embeddings(text_list):
 def get_sender_features(sender):
     is_numeric = int(str(sender).isdigit())
     is_short = int(len(str(sender)) < 6)
-    return np.array([is_numeric, is_short])
+    is_blacklisted = int(str(sender) in blacklist)
+    return np.array([is_numeric, is_short, is_blacklisted])
 
 class SMSRequest(BaseModel):
     sender: str
