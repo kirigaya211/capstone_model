@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: capstone-model
+    name: sms-spam-detection-api
     env: docker
-    plan: free
     dockerfilePath: ./Dockerfile
+    plan: free
     healthCheckPath: /docs
     envVars:
       - key: PYTHON_VERSION
