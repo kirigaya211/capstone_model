@@ -11,4 +11,10 @@ services:
       - key: TRANSFORMERS_CACHE
         value: /app/cache
       - key: TORCH_HOME
-        value: /app/cache 
+        value: /app/cache
+      - key: CALAMANCY_MODEL_PATH
+        value: tl_calamancy_md-0.1.0
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT 

@@ -1,9 +1,9 @@
 fastapi==0.104.1
-uvicorn==0.24.0
-pydantic==2.4.2
+uvicorn[standard]==0.24.0
+pydantic>=1.7.4,<1.11.0
 pandas==2.1.1
 numpy==1.24.3
-calamancy==0.1.0
+calamancy
 torch==2.1.0
 transformers==4.35.0
 scikit-learn==1.3.0

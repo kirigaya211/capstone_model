@@ -10,7 +10,11 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     gcc \
     libc-dev \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+# Create cache directories
+RUN mkdir -p /app/cache /app/models
 
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
@@ -21,11 +25,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Download NLTK data
 RUN python -c "import nltk; nltk.download('stopwords')"
 
-# Create cache directory for transformers and torch
-RUN mkdir -p /app/cache
-
 # Copy the rest of the application
 COPY . .
+
+# Set environment variables
+ENV TRANSFORMERS_CACHE=/app/cache
+ENV TORCH_HOME=/app/cache
+ENV CALAMANCY_MODEL_PATH=tl_calamancy_md-0.1.0
 
 # Expose the port the app runs on
 EXPOSE 8000
