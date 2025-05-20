@@ -32,8 +32,7 @@ def get_embeddings(text_list):
         encoded = tokenizer(text_list, return_tensors='pt', truncation=True, padding=True, max_length=128)
         output = transformer_model(**encoded)
         cls_embeddings = output.last_hidden_state[:, 0, :]
-        # Ensure we get exactly 768 features (standard for xlm-roberta-base)
-        return cls_embeddings.numpy()[:, :768]
+        return cls_embeddings.numpy()
 
 def get_sender_features(sender):
     is_numeric = int(str(sender).isdigit())
