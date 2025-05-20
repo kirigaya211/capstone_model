@@ -1,37 +1,22 @@
-# Use Python 3.9 as base image
 FROM python:3.9-slim
 
-# Set working directory
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    python3-dev \
-    gcc \
-    libc-dev \
-    git \
     && rm -rf /var/lib/apt/lists/*
-
-# Create cache directories
-RUN mkdir -p /app/cache /app/models
 
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download NLTK data
-RUN python -c "import nltk; nltk.download('stopwords')"
+# Copy model files
+COPY svm_model.pkl .
+# COPY svm_feature_means.npy .  # Uncomment if you're using feature means
 
 # Copy the rest of the application
 COPY . .
-
-# Set environment variables
-ENV TRANSFORMERS_CACHE=/app/cache
-ENV TORCH_HOME=/app/cache
-ENV CALAMANCY_MODEL_PATH=tl_calamancy_md-0.1.0
 
 # Expose the port the app runs on
 EXPOSE 8000
