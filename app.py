@@ -13,6 +13,11 @@ from typing import List, Dict, Tuple
 import re
 from wordcloud import WordCloud
 from nltk.corpus import stopwords
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("uvicorn")
 
 import nltk
 nltk.download('stopwords')
