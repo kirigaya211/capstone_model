@@ -1,5 +1,4 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import numpy as np
@@ -54,15 +53,6 @@ app = FastAPI(
     title="SMS Spam Detection API",
     description="API for detecting spam messages in SMS using machine learning",
     version="1.0.0"
-)
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
 )
 
 # Input schema
@@ -203,55 +193,56 @@ def create_visualization(text: str, sender: str, embedding: np.ndarray, predicti
 
 # Prediction endpoint
 @app.post("/predict")
-async def classify_sms(request: SMSRequest) -> Dict:
-    try:
-        # Preprocess text
-        processed = preprocess_text(request.message)
+def classify_sms(request: SMSRequest) -> Dict:
+    # Preprocess text
+    processed = preprocess_text(request.message)
 
-        # Get embeddings
-        embedding = get_embeddings(processed)
+    # Get embeddings
+    embedding = get_embeddings(processed)
 
-        # Get sender features
-        sender_features = np.array([
-            is_numeric(request.sender),
-            is_short_code(request.sender)
-        ])
+    # Get sender features
+    sender_features = np.array([
+        is_numeric(request.sender),
+        is_short_code(request.sender)
+    ])
 
-        # Combine features
-        features = np.hstack([embedding, sender_features])
+    # Combine features
+    features = np.hstack([embedding, sender_features])
 
-        # Make prediction
-        prediction = svm_model.predict([features])[0]
+    # Make prediction
+    prediction = svm_model.predict([features])[0]
 
-        # Get confidence scores
-        confidence_score = svm_model.decision_function([features])[0]
-        confidence = 1 / (1 + np.exp(-confidence_score))
+    # Get confidence scores
+    confidence_score = svm_model.decision_function([features])[0]
+    confidence = 1 / (1 + np.exp(-confidence_score))
 
-        # Create visualization (pass processed)
-        vis = create_visualization(
-            request.message,
-            request.sender,
-            embedding,
-            prediction,
-            confidence,
-            processed  # <-- pass processed here
-        )
+    # Create visualization (pass processed)
+    vis = create_visualization(
+        request.message,
+        request.sender,
+        embedding,
+        prediction,
+        confidence,
+        processed
+    )
 
-        # Get word importance (use processed)
-        importance = analyze_word_importance(processed, embedding, prediction)
+    # Get word importance (use processed)
+    importance = analyze_word_importance(processed, embedding, prediction)
 
-        return {
-            "text": request.message,
-            "sender": request.sender,
-            "prediction": "spam" if prediction == 1 else "ham",
-            "confidence": float(confidence),
-            "embedding": embedding.tolist(),
-            "important_words": [
-                {"word": word, "importance": float(score)}
-                for word, score in importance
-            ],
-            "visualization": vis
-        }
+    return {
+        "text": request.message,
+        "sender": request.sender,
+        "prediction": "spam" if prediction == 1 else "ham",
+        "confidence": float(confidence),
+        "embedding": embedding.tolist(),
+        "important_words": [
+            {"word": word, "importance": float(score)}
+            for word, score in importance
+        ],
+        "visualization": vis
+    }
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# Add root endpoint for health check
+@app.get("/")
+def root():
+    return {"status": "healthy", "message": "SMS Spam Detection API is running"}
