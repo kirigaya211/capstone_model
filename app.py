@@ -8,6 +8,9 @@ import numpy as np
 import nltk
 from nltk.corpus import stopwords
 
+# Download required NLTK data
+nltk.download('stopwords')
+
 app = FastAPI()
 
 # --- Load NLP tools and model ---
